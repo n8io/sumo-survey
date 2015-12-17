@@ -1,0 +1,97 @@
+{
+  "name": "sumo-survey",
+  "description": "A survey question app",
+  "author": "Nate Clark <n8@n8io.com>",
+  "version": "0.0.1",
+  "private": false,
+  "preferGlobal": false,
+  "main": "src/server/app.js",
+  "scripts": {
+    "build": "npm run build:circleci && npm run build:nvm && npm run build:readme",
+    "build:circleci": "node build/circleci/build",
+    "build:nvm": "node build/nvm/build",
+    "build:readme": "node build/readme/build",
+    "clean": "npm run clean:dusting && rm -rf node_modules/ src/client/statics/bower_components/",
+    "clean:dusting": "rm -rf dist/ coverage/ npm-debug.log Dockerfile docker-compose.yml .dockerignore .git.json || true",
+    "coverage": "gulp coverage",
+    "dev": "gulp | bunyan",
+    "gulp": "gulp",
+    "lint": "gulp lint",
+    "start": "node $npm_package_main",
+    "test": "gulp test"
+  },
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run test"
+    }
+  },
+  "engines": {
+    "node": "^5"
+  },
+  "bugs": {
+    "url": "https://github.com/n8io/sumo-survey/issues"
+  },
+  "keywords": [
+    "SumoMe",
+    "survey",
+    "NodeJs",
+    "ExpressJs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/n8io/sumo-survey"
+  },
+  "readme": "README.md",
+  "test": {
+    "reporter": "spec"
+  },
+  "dependencies": {
+    "body-parser": "^1",
+    "bower": "^1",
+    "bunyan": "^1",
+    "cwd": "^0.9.1",
+    "dotenv-safe": "^2.1.1",
+    "express": "^4",
+    "jade": "^1",
+    "lodash": "^3",
+    "moment": "^2",
+    "morgan": "^1",
+    "nconf": "^0",
+    "request": "^2",
+    "serve-favicon": "^2.3.0",
+    "serve-static": "^1.10.0"
+  },
+  "devDependencies": {
+    "chai": "^3",
+    "chalk": "^1",
+    "codecov.io": "^0",
+    "del": "^2",
+    "eslint": "^1",
+    "ghooks": "^1",
+    "glob-all": "^3",
+    "gulp": "^3",
+    "gulp-babel": "^6",
+    "gulp-debug": "^2",
+    "gulp-eslint": "^1",
+    "gulp-istanbul": "^0",
+    "gulp-load-plugins": "^1",
+    "gulp-mocha": "^2",
+    "gulp-nodemon": "^2",
+    "gulp-sequence": "^0",
+    "gulp-stylint": "^3",
+    "gulp-util": "^3",
+    "http-status": "^0",
+    "inquirer": "^0",
+    "istanbul": "^0",
+    "json2yaml": "^1",
+    "mocha": "^2",
+    "node-dockerfile": "^0",
+    "semver": "^5",
+    "shelljs": "^0",
+    "sort-json": "^1",
+    "supertest": "^1",
+    "underscore.string": "^3"
+  },
+  "license": "MIT"
+}
