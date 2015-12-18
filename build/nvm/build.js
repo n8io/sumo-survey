@@ -1,11 +1,9 @@
-const path = require('path');
 const fs = require('fs');
 const request = require('request');
 const semver = require('semver');
-const projRoot = process.env.PWD;
-const packageJson = require(path.join(projRoot, 'package.json'));
-const config = require(path.join(projRoot, 'src/server/helpers/config'));
-const destPath = path.join(projRoot, '.nvmrc');
+const cwd = require('cwd');
+const packageJson = require(cwd('package.json'));
+const destPath = cwd('.nvmrc');
 const reqOpts = {
   uri: 'https://semver.io/node.json',
   json: true
@@ -13,7 +11,7 @@ const reqOpts = {
 
 request.get(reqOpts, function(err, res) {
   const semversions = res.body;
-  const version = config.get('DOCKER_FORCE_NODE_VERSION') || semver.maxSatisfying(semversions.stableVersions, packageJson.engines.node);
+  const version = process.env.DOCKER_FORCE_NODE_VERSION || semver.maxSatisfying(semversions.stableVersions, packageJson.engines.node);
 
   writeRc(version);
 });
