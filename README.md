@@ -1,5 +1,5 @@
 # sumo-survey
-A simple api to build out a custom badge.
+A survey question app.
 
 * Requirements
   * [NodeJs](https://nodejs.org) ![NodeJs Version](http://img.shields.io/badge/node-^5-blue.svg)
