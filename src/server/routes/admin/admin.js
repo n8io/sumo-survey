@@ -10,11 +10,10 @@ function routeHandler(app, auth) {
   router.param('id', validateId);
 
   router
-    .all(auth.loginRequired)
-    .get('/', auth.loginRequired, get)
+    .get('/', get)
     ;
 
-  app.use('/admin', router);
+  app.use('/admin', auth.loginRequired, router);
 }
 
 function validateId(req, res, next, id) {

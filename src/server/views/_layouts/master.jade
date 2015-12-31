@@ -2,43 +2,39 @@ doctype html
 html
   head
     title SumoMe - Survey
-    link(href='https://sumome.com/favicon.ico', rel='shortcut icon')
-    link(href='https://sumome.com/css/redesign-app.css', rel='stylesheet')
-    link(href='https://sumome.com/css/redesign.css', rel='stylesheet')
-    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css', rel='stylesheet')
-    link(href='/css/style.min.css', rel='stylesheet')
+    link(href='//sumome.com/favicon.ico', rel='shortcut icon', id='meta-favicon')
+    link(href='//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css', rel='stylesheet', id='css-angular-material')
+    link(href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css', rel='stylesheet', id='css-font-awesome')
+    link(href='//fonts.googleapis.com/css?family=Maven+Pro:400,500,700,900', rel='stylesheet', id='css-google-font')
+    link(href='//sumome.com/css/redesign-app.css', rel='stylesheet', id='css-sumome')
+    link(href='//sumome.com/css/redesign.css', rel='stylesheet', id='css-sumome')
+    link(href='/css/style.min.css', rel='stylesheet', id='css-custom')
     block header-css
-    block header-js
-  body
-    .off-canvas-wrap(data-offcanvas="")
-      .inner-wrap
-        .hero
-          .hero-bg
-            .page-border
-            .header
-              .row
-                .large-12.columns
-                  .left.relative
-                    a.title(href='/') SumoMe | Survey
-                    .clearfix
-                  .nav.right
-                    - if (!!user) // User is logged in
-                      a.nav-login(href="/admin", title="Admin") Admin
-                      a.nav-logout(href="/logout", title="Log Out") Logout
-                    - else
-                      a.nav-register(href="/admin", title="Log In") Log In
-        .body
-          br
-          block body-content
-          br
-        footer.footer
-          .row
-            .medium-6.large-6.columns.footer-nav
+  body(data-ng-app='surveyApp', data-ng-cloak, layout='column')
+    md-toolbar(layout='row')
+      .md-toolbar-tools
+        .title
+          a(href='/')
+            img(src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpBNjE1OTIxRTcwNzUxMUUzQkUxRkIxNEU0NUM0RjM4OCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpBNjE1OTIxRjcwNzUxMUUzQkUxRkIxNEU0NUM0RjM4OCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkUzQjQyQzRENzA3NDExRTNCRTFGQjE0RTQ1QzRGMzg4IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkUzQjQyQzRFNzA3NDExRTNCRTFGQjE0RTQ1QzRGMzg4Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+t9pejAAAAWRJREFUeNrslz1Lw1AUhhOlYhXFiEt/gIigm+isg5sOjs7+D/+HY91ENxGRxFLxY+zWSRCdHMQ6OTgYnwsnEEppTtMEAp4DL29yuefcJ/fk9sOP49irckx4FQ8DNEADNEADNMD/CvjV6x0j9QMwdx11nY+Q47t18u7gMjqlQE0Dh92iVefcbyhyJrETtJIXMEKH6IJi0wq4JRlyHjG+lQHXREeSmxvQxR66ouicAi6JeYHcGZAzhZ3Jw6fXGQ1wIQjesGe53UYhxRcVcEnMokvm7fbBnaMDGXplnZdxTnGYut5EbRZpSPvaQ+CSqAvkPprh+lo6Mqh+LsD+7V9DD+gGBcrDWpNde5ROpKOVlewP+08iLf1w80r6mGvQ4vfcO0jyJ9YpCa6bBaf9JolKAmxpJmkAw5IAw6IA79FPwXC/6K4QQN6Tb+ypYMCOvN/eWKfYfm4ZoAEaoAEaoAEaYOUB/wQYAATRi8cPOM7SAAAAAElFTkSuQmCC')
+            span.hide-xs SumoMe | Survey
+        span(flex)
+        - if (!user)
+          md-button(href='/admin', aria-label='Log In') Log In
+        - else
+          md-button(href='/admin', aria-label='Admin') Admin
+          md-button(href='/logout', aria-label='Log Out') Log Out
+    div(flex,layout='row')
+      md-content#content(flex)
+        block body-content
 
-    script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js')
-    script(src='https://sumome.com/components/foundation/js/foundation.min.js')
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js')
-    script(src='/js/script.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js', id='js-angular')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js', id='js-angular-route')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js', id='js-angular-animate')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js', id='js-angular-aria')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-messages.min.js', id='js-angular-messages')
+    script(src='//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js', id='js-angular-material')
+
+    script(src='/js/script.min.js', id='js-custom')
     //- Add livereload to help in local development only
     if !!!((process.env.NODE_ENV || 'local').toLowerCase().indexOf('local'))
       script(src='//127.0.0.1:35729/livereload.js', async, data-id='js-livereload')

@@ -32,7 +32,8 @@ function getQuestionCreate(req, res) {
   return res
     .status(200)
     .render('admin/question/create', {
-      question: req.question
+      question: req.question,
+      csrfToken: req.csrfToken()
     })
     ;
 }

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
 const cwd = require('cwd');
@@ -8,6 +9,7 @@ const buildDir = cwd('build');
 const srcDir = cwd('src');
 const testDir = cwd('test');
 const distDir = cwd('dist');
+const bowerCfg = JSON.parse(fs.readFileSync(cwd('.bowerrc'), 'utf-8').toString());
 const validEnvironments = {
   local: 'local',
   dev: 'dev',
@@ -84,9 +86,9 @@ const cfg = {
     js: {
       src: [
         path.join(buildDir, '**/*.js'),
-        path.join(srcDir, '**/*.js'),
+        path.join(srcDir, 'server/**/*.js'),
         path.join(testDir, '**/*.js'),
-        path.join(`!${srcDir}`, 'app/client/statics/**/*.js'),
+        path.join(`!${srcDir}`, 'client/statics/**/*.js'),
         path.join(`!${cwd()}`, '**/*.min.js')
       ]
     },
@@ -138,6 +140,13 @@ const cfg = {
   start: {
     ms: now.format('x'),
     label: now.format('dddd, MMMM Do YYYY, h:mm:ssA Z')
+  },
+  statics: {
+    bower: {
+      src: cwd(bowerCfg.directory),
+      baseDir: './src/client/statics',
+      dest: path.join(distDir, 'statics')
+    }
   },
   test: {
     all: {

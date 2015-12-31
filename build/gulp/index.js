@@ -5,9 +5,10 @@ module.exports = function(gulp, plugins) {
   require('./tasks')(gulp, plugins, cfg);
 
   // Expose custom multi-tasks
-  gulp.task('compile', plugins.sequence(['compile-js', 'compile-css']));
+  gulp.task('compile', plugins.sequence(['compile-js', 'compile-css', 'compile-statics']));
   gulp.task('compile-js', ['js']);
   gulp.task('compile-css', ['stylus']);
+  gulp.task('compile-statics', ['statics']);
   gulp.task('lint', plugins.sequence(['lint-js', 'lint-css']));
   gulp.task('lint-js', ['eslint']);
   gulp.task('lint-css', ['stylint']);

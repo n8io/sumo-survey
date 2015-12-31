@@ -1,4 +1,15 @@
 extends _layouts/master
 
 append body-content
-  span content
+  div(data-ng-controller='AnswerController as ac', layout='row', layout-align='center center', layout-margin='0')
+    form(method='post', action='/', flex='100', flex-sm='80', flex-md='65', flex-lg='50', flex-xl='40')
+      md-card.md-whiteframe-12dp
+        md-card-title
+          md-card-title-text
+            mdspan.md-headline What is your favorite color adsas adsa asd as aa sf dsgs fsg sdgsfdgsdfgf fdsf gdd?
+        md-card-content
+          md-radio-group(data-ng-model='ac.answer').md-default
+            md-radio-button(data-ng-repeat='answer in ac.possibleAnswers', data-ng-value='answer.id') {{answer.text}}
+        md-card-actions(layout='row')
+          button(type='submit',flex, data-ng-disabled='!ac.answer').md-button.md-raised.md-primary.sumo-green Submit
+        input(name='_csrf', type='hidden',value='#{csrfToken}')

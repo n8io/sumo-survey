@@ -10,12 +10,11 @@ function routeHandler(app, auth) {
   router.param('id', validateId);
 
   router
-    .all(auth.loginRequired)
     .get('/:id', getQuestionEdit)
     .post('/:id', postQuestion)
     ;
 
-  app.use('/admin/question/edit', router);
+  app.use('/admin/question/edit', auth.loginRequired, router);
 }
 
 function validateId(req, res, next, id) {
@@ -31,15 +30,15 @@ function validateId(req, res, next, id) {
 function getQuestionEdit(req, res) {
   models
     .question
-    .findAll({
+    .findOne({
       where: {
         id: req.question.id
       }
     })
-    .then(function(questions) {
-      console.log(JSON.stringify(questions, null, 2)); // eslint-disable-line no-console
+    .then(function(question) {
       return res.render('admin/question/create', {
-        question: questions.length ? questions[0] : []
+        question: question,
+        csrfToken: req.csrfToken()
       });
     })
     ;
