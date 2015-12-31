@@ -7,7 +7,7 @@ module.exports = function(gulp, plugins, cfg) {
   function eslint() {
     const customGulpFormatter = require(path.join(projRoot, 'build/eslint/customGulpFormatter'));
 
-    return gulp.src(cfg.eslint.src)
+    return gulp.src(cfg.lint.js.src)
       .pipe(plugins.eslint())
       .pipe(plugins.eslint.format(customGulpFormatter))
       .pipe(plugins.eslint.failAfterError())

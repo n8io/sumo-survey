@@ -35,6 +35,7 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 .git.json
+dist
 
 # Bower
 src/client/statics/bower_components

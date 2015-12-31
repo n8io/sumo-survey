@@ -1,18 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
+const projRoot = process.env.PWD;
+const routesRelativeDir = 'src/server/routes/admin/question';
 
-const routesDir = 'src/server/middleware';
-
-module.exports = function(app) {
-  const prioritizedMiddleware = [
-    './logger',
-    './bodyParser',
-    './cookieParser'
-  ];
+module.exports = function(app, auth) {
+  const prioritizedRoutes = [];
 
   // Normalize to absolute paths
-  const routes = _.map(prioritizedMiddleware, function(mw) {
+  const routes = _.map(prioritizedRoutes, function(mw) {
     return getRouteAbsolutePath(mw);
   });
 
@@ -24,7 +20,6 @@ module.exports = function(app) {
     const filePath  = path.join(__dirname, file.split('.js').join(''));
 
     // If route isn't in the list already, lets add it to the list
-    /* istanbul ignore if */
     if (routes.indexOf(filePath) === -1) {
       routes.push(filePath);
     }
@@ -32,10 +27,10 @@ module.exports = function(app) {
 
   // Finally register the routes with the app
   _.each(routes, function(mw) {
-    require(mw)(app);
+    require(mw)(app, auth);
   });
 };
 
 function getRouteAbsolutePath(relativeToRoutesDirPath) {
-  return path.join(process.env.PWD, routesDir, relativeToRoutesDirPath);
+  return path.join(projRoot, routesRelativeDir, relativeToRoutesDirPath);
 }

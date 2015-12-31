@@ -5,6 +5,28 @@ module.exports = function(gulp, plugins) {
   require('./tasks')(gulp, plugins, cfg);
 
   // Expose custom multi-tasks
-  gulp.task('lint', plugins.sequence(['eslint']));
-  gulp.task('default', plugins.sequence(['clean', 'lint', 'git-info'], 'nodemon'));
+  gulp.task('compile', plugins.sequence(['compile-js', 'compile-css']));
+  gulp.task('compile-js', ['js']);
+  gulp.task('compile-css', ['stylus']);
+  gulp.task('lint', plugins.sequence(['lint-js', 'lint-css']));
+  gulp.task('lint-js', ['eslint']);
+  gulp.task('lint-css', ['stylint']);
+
+  gulp.task('default', plugins.sequence(
+    [
+      'clean',
+      'git-info',
+      'compile'
+      // 'statics',
+    ]
+  ));
+
+  gulp.task('dev', plugins.sequence(
+    [
+      'lint',
+      'default'
+    ],
+    'nodemon',
+    'watch'
+  ));
 };

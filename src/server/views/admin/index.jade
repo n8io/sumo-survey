@@ -1,0 +1,39 @@
+extends ../_layouts/master
+
+append body-content
+  .row
+    .right
+      a.button.green.semi-trans.sml.right(href='/admin/question/create')
+        i.fa.fa-plus.pad-right-10
+        span New Question
+    .clearfix
+  .row
+    - if (!questions || !questions.length)
+      table.survey-data
+        thead
+          tr
+            th Questions
+        tbody
+          tr
+            td
+              .text-center
+                span There aren't any questions currently. Get started by&nbsp;
+                a(href='/admin/question/create') creating a new survey question
+                span .
+    - else
+      table.survey-data
+        thead
+          tr
+            th(colspan='3') Questions
+        tbody
+          - for q in questions
+            tr
+              td #{q.text}
+              td(width='100').text-center
+                a(href='/admin/question/results/#{q.id}') Responses
+              td(width='100').text-center
+                a(href='/admin/question/edit/#{q.id}') Edit
+                span &nbsp;|&nbsp;
+                a(href='/admin/question/delete/#{q.id}') Delete
+
+

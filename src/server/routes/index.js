@@ -4,8 +4,10 @@ const _ = require('lodash');
 const projRoot = process.env.PWD;
 const routesRelativeDir = 'src/server/routes';
 
-module.exports = function(app) {
-  const prioritizedRoutes = [];
+module.exports = function(app, auth) {
+  const prioritizedRoutes = [
+    './root'
+  ];
 
   // Normalize to absolute paths
   const routes = _.map(prioritizedRoutes, function(mw) {
@@ -27,7 +29,7 @@ module.exports = function(app) {
 
   // Finally register the routes with the app
   _.each(routes, function(mw) {
-    require(mw)(app);
+    require(mw)(app, auth);
   });
 };
 

@@ -1,16 +1,25 @@
 module.exports = function(gulp, plugins, cfg) {
-  const opts = cfg.nodemon;
-
-  opts.tasks = ['lint'];
+  const livereload = plugins.livereload;
 
   gulp.task('nodemon', nodemon);
 
   function nodemon() {
-    const monitor = plugins.nodemon(opts);
+    const monitor = plugins.nodemon(cfg.nodemon);
 
     // Required to handle bug when attempting to quit with Cmd + C
-    monitor.on('quit', function() {
-      process.exit();
-    });
+    monitor
+      .on('restart', onAppRestarted)
+      .on('quit', onAppQuit)
+      ;
+  }
+
+  function onAppRestarted() {
+    setTimeout(function() {
+      livereload.changed('Server restarted and browser is about to be');
+    }, 1000);
+  }
+
+  function onAppQuit() {
+    process.exit();
   }
 };

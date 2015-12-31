@@ -1,17 +1,26 @@
 const path = require('path');
 const shell = require('shelljs');
 const cwd = require('cwd');
+const moment = require('moment');
+const nib = require('nib');
+
 const buildDir = cwd('build');
 const srcDir = cwd('src');
 const testDir = cwd('test');
 const distDir = cwd('dist');
-const packageJson = require(cwd('package.json'));
+const validEnvironments = {
+  local: 'local',
+  dev: 'dev',
+  development: 'dev',
+  qa: 'qa',
+  uat: 'uat',
+  prod: 'prod',
+  production: 'prod'
+};
+const now = moment();
+
 const cfg = {
-  stylint: {
-    src: [
-      path.join(srcDir, 'app/client/**/*.styl')
-    ]
-  },
+  env: validEnvironments[process.env.NODE_ENV || ''] || validEnvironments.local,
   clean: {
     src: [
       distDir
@@ -48,36 +57,87 @@ const cfg = {
       }
     }
   },
-  eslint: {
-    src: [
-      path.join(buildDir, '**/*.js'),
-      path.join(srcDir, '**/*.js'),
-      path.join(testDir, '**/*.js'),
-      path.join(`!${srcDir}`, 'app/client/statics/**/*.js'),
-      path.join(`!${cwd()}`, '**/*.min.js')
-    ]
+  css: {
+    src: path.join(srcDir, 'client/precompile/css/**/*.styl'),
+    dest: {
+      file: 'style.min.css',
+      dir: path.join(distDir, 'css')
+    },
+    filter: ['**/_build.styl'],
+    options: {
+      local: {
+        linenos: true,
+        use: nib(),
+        import: ['nib']
+      },
+      other: {
+        compress: true,
+        use: nib(),
+        import: ['nib']
+      }
+    },
+    banner: {
+      formatStr: '/* Compiled via gulp-stylus on ${label} [ ${ms} ] */\n'
+    }
+  },
+  lint: {
+    js: {
+      src: [
+        path.join(buildDir, '**/*.js'),
+        path.join(srcDir, '**/*.js'),
+        path.join(testDir, '**/*.js'),
+        path.join(`!${srcDir}`, 'app/client/statics/**/*.js'),
+        path.join(`!${cwd()}`, '**/*.min.js')
+      ]
+    },
+    css: {
+      src: [
+        path.join(srcDir, 'client/**/*.styl')
+      ]
+    }
   },
   'git-info': {
     dest: cwd('.git.json')
   },
+  js: {
+    client: {
+      src: [
+        path.join(srcDir, 'client/precompile/js/**/*.js')
+      ],
+      dest: path.join(distDir, 'js'),
+      filename: 'script.min.js',
+      beautify: {
+        indentChar: ' ',
+        indentSize: 2
+      },
+      uglify: {
+        mangle: true,
+        compress: true
+      },
+      banner: {
+        formatStr: '/* Compiled via gulp-uglify on ${label} [ ${ms} ] */\n'
+      }
+    },
+    server: {
+      src: [
+        path.join(srcDir, 'server/**/*.js')
+      ]
+    }
+  },
   nodemon: {
     script: cwd(process.env['npm_package_main']),
-    ext: 'js',
-    ignore: [
-      path.join(`!${buildDir}`, 'docker/**/*.js'),
-      path.join(`!${srcDir}`, 'client/statics/**/*')
-    ]
-  },
-  plato: {
-    src: [
-      cwd('src/**/*.js')
+    ext: 'js json',
+    watch: [
+      path.join(srcDir, 'server/**/*.js')
     ],
-    dest: cwd('coverage/plato'),
-    options: {
-      title: `In-Depth Code Coverage for ${packageJson.name}`,
-      date: (new Date()).getTime(),
-      recurse: true
-    }
+    env: {
+      NODE_ENV: validEnvironments[process.env.NODE_ENV || ''] || validEnvironments.local
+    },
+    nodeArgs: ['--debug']
+  },
+  start: {
+    ms: now.format('x'),
+    label: now.format('dddd, MMMM Do YYYY, h:mm:ssA Z')
   },
   test: {
     all: {
@@ -106,6 +166,13 @@ const cfg = {
         reporter: 'spec',
         growl: true
       }
+    }
+  },
+  watch: {
+    client: {
+      src: [
+        path.join(srcDir, 'client/precompile/js/**/*.js')
+      ]
     }
   }
 };

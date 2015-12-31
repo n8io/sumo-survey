@@ -1,0 +1,45 @@
+doctype html
+html
+  head
+    title SumoMe - Survey
+    link(href='https://sumome.com/favicon.ico', rel='shortcut icon')
+    link(href='https://sumome.com/css/redesign-app.css', rel='stylesheet')
+    link(href='https://sumome.com/css/redesign.css', rel='stylesheet')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css', rel='stylesheet')
+    link(href='/css/style.min.css', rel='stylesheet')
+    block header-css
+    block header-js
+  body
+    .off-canvas-wrap(data-offcanvas="")
+      .inner-wrap
+        .hero
+          .hero-bg
+            .page-border
+            .header
+              .row
+                .large-12.columns
+                  .left.relative
+                    a.title(href='/') SumoMe | Survey
+                    .clearfix
+                  .nav.right
+                    - if (!!user) // User is logged in
+                      a.nav-login(href="/admin", title="Admin") Admin
+                      a.nav-logout(href="/logout", title="Log Out") Logout
+                    - else
+                      a.nav-register(href="/admin", title="Log In") Log In
+        .body
+          br
+          block body-content
+          br
+        footer.footer
+          .row
+            .medium-6.large-6.columns.footer-nav
+
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js')
+    script(src='https://sumome.com/components/foundation/js/foundation.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js')
+    script(src='/js/script.min.js')
+    //- Add livereload to help in local development only
+    if !!!((process.env.NODE_ENV || 'local').toLowerCase().indexOf('local'))
+      script(src='//127.0.0.1:35729/livereload.js', async, data-id='js-livereload')
+    block body-scripts
