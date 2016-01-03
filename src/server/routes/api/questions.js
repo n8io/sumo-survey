@@ -16,7 +16,7 @@ function routeHandler(app, auth) {
     .get('/', getQuestions)
     .get('/:id', getQuestion)
     .post('/', createQuestion)
-    .post('/:id', updateQuestion)
+    .put('/', updateQuestion)
     .delete('/:id', deleteQuestion)
     ;
 
@@ -59,7 +59,7 @@ function createQuestion(req, res) {
     .then(function(q) {
       const promises = [];
 
-      question = _.clone(q);
+      question = _.assign(q, {});
 
       (req.body.answers || []).forEach(function(answer) {
         answer.questionId = question.id;
@@ -87,28 +87,63 @@ function createQuestion(req, res) {
 }
 
 function updateQuestion(req, res) {
-  let question = null;
+  const question = req.body;
 
   models
     .question
-    .update(req.body)
-    .then(function(q) {
-      const promises = [];
-
-      question = _.clone(q);
-
-      (req.body.answers || []).forEach(function(answer) {
-        answer.questionId = question.id;
-
-        promises.push(models.answer.create(answer));
-      });
-
-      return models.Sequelize.Promise.all(promises);
+    .findOne({
+      where: {
+        id: question.id
+      },
+      include: [models.answer]
     })
-    .then(function(answers) {
-      question.answers = answers;
+    .then(function(q) {
+      const updatingAnswerIds = _.pluck(question.answers, 'id');
+      const existingAnswerIds = _.pluck(q.answers, 'id');
+      const deletedAnswerIds = _.difference(existingAnswerIds, updatingAnswerIds);
 
-      return res.json(question);
+      if (deletedAnswerIds.length) {
+        return models
+          .answer
+          .destroy({
+            where: {
+              id: deletedAnswerIds
+            }
+          })
+          ;
+      }
+      else {
+        return 0;
+      }
+    })
+    .then(function() {
+      models
+        .question
+        .upsert(
+          question
+          , {
+            where: {
+              id: question.id || -1
+            }
+          }
+        )
+        .then(function() {
+          const promises = [];
+
+          (req.body.answers || []).forEach(function(answer) {
+            answer.questionId = question.id;
+
+            promises.push(models.answer.upsert(answer, {where: {id: answer.id}}));
+          });
+
+          return models.Sequelize.Promise.all(promises);
+        })
+        .then(function(answers) {
+          question.answers = answers;
+
+          return res.json(question);
+        })
+        ;
     })
     ;
 }

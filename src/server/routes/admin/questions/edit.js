@@ -1,5 +1,4 @@
 const express = require('express');
-const _ = require('lodash');
 const cwd = require('cwd');
 const models = require(cwd('src/server/models'));
 
@@ -27,55 +26,33 @@ function setAngularCsrf(req, res, next) {
 
 function lookupQuestion(req, res, next, id) {
   const reg = /^([0-9a-f]){8}$/ig;
-  const ERR_MSG = `Could not find a question with that id.`;
+  const ERR_MSG_NOT_FOUND = `Could not find a question with that id.`;
   const isUuid = reg.test(id);
 
-  if (!isUuid && !_.isNumber(id)) {
+  if (!isUuid) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  if (isUuid) {
-    models
-      .question
-      .findOne({
-        where: {
-          key: {
-            $like: `${id}%`
-          }
-        },
-        include: [models.answer]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
+  models
+    .question
+    .findOne({
+      where: {
+        key: {
+          $like: `${id}%`
         }
+      },
+      include: [models.answer]
+    })
+    .then(function(question) {
+      if (!question) {
+        return next(new Error(ERR_MSG_NOT_FOUND));
+      }
 
-        req.question = question;
+      req.question = question;
 
-        return next();
-      })
-      ;
-  }
-  else if (_.isNumber(id)) {
-    models
-      .question
-      .findOne({
-        where: {
-          id: parseInt(id, 10)
-        },
-        include: [models.answer]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
-        }
-
-        req.question = question;
-
-        return next();
-      })
-      ;
-  }
+      return next();
+    })
+    ;
 }
 
 function deleteQuestion(req, res) {
@@ -87,7 +64,7 @@ function deleteQuestion(req, res) {
       }
     })
     .then(function() {
-      return res.redirect('/admin');
+      return res.redirect('/questions');
     })
     ;
 }
@@ -130,7 +107,7 @@ function postQuestion(req, res) {
       return models.Sequelize.Promise.all(promises);
     })
     .then(function() {
-      return res.redirect('/admin');
+      return res.redirect('/questions');
     })
     ;
 }

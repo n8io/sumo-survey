@@ -2,10 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 const projRoot = process.env.PWD;
-const routesRelativeDir = 'src/server/routes/admin/question';
+const routesRelativeDir = 'src/server/routes/admin/questions';
 
 module.exports = function(app, auth) {
-  const prioritizedRoutes = [];
+  const prioritizedRoutes = [
+    './results',
+    './create',
+    './edit'
+  ];
 
   // Normalize to absolute paths
   const routes = _.map(prioritizedRoutes, function(mw) {

@@ -18,7 +18,9 @@
       };
     })
     .factory('QuestionService', ['$resource', function($resource) {
-      return $resource('/api/questions/:id');
+      return $resource('/api/questions/:id', {id:null}, {
+        'update': {method:'PUT'}
+      });
     }])
     .factory('QuestionResultsService', ['$resource', function($resource) {
       return $resource('/api/questions/:id/results');
@@ -26,13 +28,7 @@
     .controller('AnswerController', [function() {
       var vm = this;
 
-      vm.onSubmitClick = onSubmitClick;
-
-      vm.question = window.__question || null;
-
-      function onSubmitClick(ev) {
-
-      }
+      vm.question = window.__question;
     }])
     .controller('QuestionController', ['$timeout', '$http', 'QuestionService', function($timeout, $http, QuestionService) {
       var vm = this;
@@ -81,8 +77,9 @@
       function onSubmitClick(ev) {
         // Made it this far, client side validation passed
         var data = angular.fromJson(angular.toJson(vm.question));
+        var method = data.id ? 'update' : 'save'; // Determine if we are should PUT or POST
 
-        QuestionService.save(data, function(question) {
+        QuestionService[method](data, function(question) {
           window.location = '/questions';
         }, function(err) {
             console.log(err);
@@ -97,6 +94,7 @@
 
       function isValid() {
         var valid = true;
+        var uniqueAnswers = [];
 
         if (vm.isLoading || vm.isSubmitting) {
           return false;
@@ -116,6 +114,13 @@
 
         vm.question.answers.forEach(function(a) {
           if (!a.text || !a.text.length) {
+            valid = false;
+          }
+
+          if (uniqueAnswers.indexOf((a.text || '').toLowerCase()) === -1) {
+            uniqueAnswers.push((a.text || '').toLowerCase());
+          }
+          else {
             valid = false;
           }
         });
@@ -161,10 +166,51 @@
       }
 
       function deleteQuestion(question) {
+        vm.isDeleting = question.id;
         QuestionService.delete({id: question.key.substring(0, 8)}, function() {
           QuestionService.query().$promise.then(function(questions) {
             vm.questions = questions;
+
+            vm.isDeleting = false;
           });
+        });
+      }
+    }])
+    .controller('QuestionResultsController', ['QuestionResultsService', function(QuestionResultsService) {
+      var vm = this;
+      var isLoading = true;
+
+      vm.onRefreshClick = onRefreshClick;
+
+      init();
+
+      function init() {
+        refresh();
+      }
+
+      function onRefreshClick(ev) {
+        refresh();
+      }
+
+      function refresh() {
+        isLoading = true;
+
+        QuestionResultsService.get({id: window.__key}, function(question) {
+          var responseCount = 0;
+
+          question.answers.forEach(function(a) {
+            responseCount += a.results.length;
+          });
+
+          question.answers = question.answers.map(function(a) {
+            a.ratio = responseCount === 0 ? 0 : 100 * (a.results.length / responseCount);
+
+            return a;
+          });
+
+          vm.question = question;
+
+          isLoading = false;
         });
       }
     }])

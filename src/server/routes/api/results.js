@@ -65,71 +65,56 @@ function lookupClientAnswer(req, res, next, clientAnswerId) {
 
 function lookupQuestion(req, res, next, id) {
   const reg = /^([0-9a-f]){8}$/ig;
-  const ERR_MSG = `Could not find a question with that id.`;
+  const ERR_MSG_NOT_FOUND = `Could not find a question with that id.`;
   const isUuid = reg.test(id);
 
-  if (!isUuid && !_.isNumber(id)) {
+  if (!isUuid) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  console.log('here'); // eslint-disable-line no-console
-
-  if (isUuid) {
-    models
-      .question
-      .findOne({
-        where: {
-          key: {
-            $like: `${id}%`
-          }
-        },
-        include: [
-          models.answer
-        ]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
+  models
+    .question
+    .findOne({
+      where: {
+        key: {
+          $like: `${id}%`
         }
+      },
+      include: [
+        models.answer
+      ]
+    })
+    .then(function(question) {
+      if (!question) {
+        return next(new Error(ERR_MSG_NOT_FOUND));
+      }
 
-        req.question = question;
+      req.question = question;
 
-        models
-          .clientAnswer
-          .findAll({
-            where: {
-              answerId: _.pick(question.answers, 'id')
-            }
-          })
-          .then(function() {
-            // TODO: finish counts stuff
+      models
+        .clientAnswer
+        .findAll({
+          where: {
+            answerId: _.pluck(question.answers, 'id')
+          }
+        })
+        .then(function(clientAnswers) {
+          const answersWithResults = _.map(unbind(req.question.answers), function(a) {
+            a.results = _.where(clientAnswers, {answerId: a.id});
+
+            return a;
           })
           ;
 
-        return next();
-      })
-      ;
-  }
-  else if (_.isNumber(id)) {
-    models
-      .question
-      .findOne({
-        where: {
-          id: parseInt(id, 10)
-        },
-        include: [
-          models.answer
-        ]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
-        }
+          req.question = _.assign(unbind(req.question), {answers: answersWithResults});
 
-        req.question = question;
+          return next();
+        })
+        ;
+    })
+    ;
+}
 
-        return next();
-      })
-      ;
-  }
+function unbind(obj) {
+  return JSON.parse(JSON.stringify(obj));
 }

@@ -1,6 +1,9 @@
 extends _layouts/master
 
 append body-content
+  - if (question && question.id !== -1)
+    script.
+      window.__question = !{JSON.stringify(question, null, 2)};
   div(data-ng-controller='AnswerController as ac', layout='row', layout-align='center center', layout-margin='0')
     form(method='post', action='/', flex='100', flex-sm='80', flex-md='65', flex-lg='50', flex-xl='40')
       md-card.md-whiteframe-12dp
@@ -10,7 +13,7 @@ append body-content
               span #{question.text}
               - if (!!user)
                 | &nbsp;
-                a(href='/questions/#{question.key.substring(0, 8)}') edit
+                a(href='/questions/#{question.key | uuid8}') edit
         md-card-content
           md-radio-group(data-ng-model='ac.answer').md-default
             md-radio-button(data-ng-repeat='answer in ac.question.answers', data-ng-value='answer.key') {{answer.text}}
@@ -19,6 +22,3 @@ append body-content
         input(name='_csrf', type='hidden',value='#{csrfToken}')
         input(name='q', type='hidden',value='#{question.key}')
         input(name='a', type='hidden',value='{{ac.answer}}')
-    - if (question && question.id !== -1)
-      script.
-        window.__question = !{JSON.stringify(question, null, 2)};

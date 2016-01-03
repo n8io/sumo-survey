@@ -21,7 +21,7 @@ append body-content
               td(md-cell)
                 .text-center
                   span There aren't any questions currently. Get started by&nbsp;
-                  a(href='/questions/create') creating a new survey question
+                  a(href='/questions/new') creating a new survey question
                   span .
         - else
             thead(md-head)
@@ -29,7 +29,7 @@ append body-content
                 th(colspan='3', md-column)
                   span Questions
             tbody(md-body)
-              tr(md-row, data-ng-repeat='q in qac.questions')
+              tr(md-row, data-ng-repeat='q in qac.questions', data-ng-class='{deleting: qac.isDeleting == q.id}')
                 td(md-cell, data-ng-bind='q.text')
                 td(md-cell, width='100').text-center
                   a(data-ng-href='/questions/{{q.key | uuid8}}/results') Responses

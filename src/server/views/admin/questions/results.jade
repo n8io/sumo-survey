@@ -1,0 +1,23 @@
+extends ../../_layouts/master
+
+append body-content
+  - if (question)
+    script.
+      window.__key = '#{question.key.substring(0, 8)}';
+  md-content(data-ng-controller='QuestionResultsController as qrc')
+    h2(data-ng-bind='qrc.question.text')
+    md-list(flex='100')
+      md-subheader
+        span Answers
+        .right
+          a(href='javascript://', data-ng-click='qrc.onRefreshClick($event)', data-ng-class='{"is-loading": qrc.isLoading}')
+            i.fa.fa-refresh
+      md-list-item.md-2-line(data-ng-repeat='answer in qrc.question.answers')
+        .md-list-item-text
+          h3.mgn-bottom-5
+            span(data-ng-bind='answer.text')
+            .right(data-ng-show='answer.results.length == 0')
+              span 0 responses
+            a.right(data-ng-show='answer.results.length > 0', data-ng-bind='(answer.results.length || 0) + " response" + (answer.results.length == 1 ? "" : "s")')
+          p
+            md-progress-linear(md-mode='determinate', value="{{answer.ratio || 0}}").mgn-top-5

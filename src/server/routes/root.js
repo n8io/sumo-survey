@@ -55,7 +55,7 @@ function getQuestion(req, res) {
           LIMIT 1
         `, {
           bind: {
-            clientKey: req.cookies.uuid
+            clientKey: client.key
           },
           type: models.sequelize.QueryTypes.SELECT
         }
@@ -157,12 +157,12 @@ function postQuestion(req, res) {
             answerId: answer.id
           })
           .then(function() {
-            return res.redirect('/');
+            return res.render('thank-you');
           })
           ;
       }
       else {
-        return res.redirect('/');
+        return res.render('thank-you');
       }
     })
     ;
