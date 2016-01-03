@@ -2,6 +2,8 @@ doctype html
 html
   head
     title SumoMe - Survey
+    meta(name='viewport', content='initial-scale=1, maximum-scale=1, user-scalable=no')
+    meta(name='viewport', content='width=device-width')
     link(href='//sumome.com/favicon.ico', rel='shortcut icon', id='meta-favicon')
     link(href='//ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css', rel='stylesheet', id='css-angular-material')
     link(href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css', rel='stylesheet', id='css-font-awesome')
@@ -9,6 +11,8 @@ html
     link(href='//sumome.com/css/redesign-app.css', rel='stylesheet', id='css-sumome')
     link(href='//sumome.com/css/redesign.css', rel='stylesheet', id='css-sumome')
     link(href='/css/style.min.css', rel='stylesheet', id='css-custom')
+    style.
+      @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}
     block header-css
   body(data-ng-app='surveyApp', data-ng-cloak, layout='column')
     md-toolbar(layout='row')
@@ -27,6 +31,7 @@ html
       md-content#content(flex)
         block body-content
 
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js', id='js-jquery')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js', id='js-angular')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js', id='js-angular-route')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js', id='js-angular-animate')

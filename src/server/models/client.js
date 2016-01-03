@@ -11,14 +11,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        client.belongsToMany(models.clientQnA, {
-          through: models.clientQnA
-        });
-      }
-    }
   });
 
   return client;

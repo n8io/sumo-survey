@@ -14,14 +14,6 @@ module.exports = function(sequelize, DataTypes) {
     text: {
       type: DataTypes.STRING
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        question.belongsToMany(models.questionAnswer, {
-          through: models.questionAnswer
-        });
-      }
-    }
   });
 
   return question;

@@ -11,11 +11,17 @@ function routeHandler(app, auth) {
 
   router
     .all(auth.loginRequired)
-    .get('/', getQuestionCreate)
+    .get('/', setAngularCsrf, getQuestionCreate)
     .post('/', postQuestion)
     ;
 
   app.use('/admin/question/create', router);
+}
+
+function setAngularCsrf(req, res, next) {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+
+  return next();
 }
 
 function validateId(req, res, next, id) {
@@ -41,7 +47,20 @@ function getQuestionCreate(req, res) {
 function postQuestion(req, res) {
   models
     .question
-    .create({text: req.body.question})
+    .create(req.body)
+    .then(function(question) {
+      const promises = [];
+
+      req.body.answers.forEach(function(answer) {
+        answer.questionId = question.id;
+
+        promises.push(models.answer.create(answer));
+      });
+
+      return models.Sequelize.Promise.all(promises);
+
+      // console.log(JSON.stringify(question, null, 2)); // eslint-disable-line no-console
+    })
     .then(function() {
       return res.redirect('/admin');
     })

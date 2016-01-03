@@ -6,10 +6,19 @@ append body-content
       md-card.md-whiteframe-12dp
         md-card-title
           md-card-title-text
-            mdspan.md-headline What is your favorite color adsas adsa asd as aa sf dsgs fsg sdgsfdgsdfgf fdsf gdd?
+            mdspan.md-headline.relative
+              span #{question.text}
+              - if (!!user)
+                | &nbsp;
+                a(href='/admin/question/edit/#{question.key}') edit
         md-card-content
           md-radio-group(data-ng-model='ac.answer').md-default
-            md-radio-button(data-ng-repeat='answer in ac.possibleAnswers', data-ng-value='answer.id') {{answer.text}}
+            md-radio-button(data-ng-repeat='answer in ac.question.answers', data-ng-value='answer.key') {{answer.text}}
         md-card-actions(layout='row')
           button(type='submit',flex, data-ng-disabled='!ac.answer').md-button.md-raised.md-primary.sumo-green Submit
         input(name='_csrf', type='hidden',value='#{csrfToken}')
+        input(name='q', type='hidden',value='#{question.key}')
+        input(name='a', type='hidden',value='{{ac.answer}}')
+    - if (question && question.id !== -1)
+      script.
+        window.__question = !{JSON.stringify(question, null, 2)};

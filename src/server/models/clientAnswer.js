@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(sequelize, DataTypes) {
-  const clientQnA = sequelize.define('clientQnA', {
+  const clientAnswer = sequelize.define('clientAnswer', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -9,5 +9,5 @@ module.exports = function(sequelize, DataTypes) {
     }
   });
 
-  return clientQnA;
+  return clientAnswer;
 };
