@@ -3,17 +3,17 @@ extends ../../_layouts/master
 append body-content
   - if (question)
     script.
-      window.__question = !{JSON.stringify(question)};
+      window.__key = '#{question.key.substring(0, 8)}';
   div(data-ng-controller='QuestionController as qc', layout='row', layout-align='center center', layout-margin='0')
     form(method='post', action='/', flex='100', flex-sm='80', flex-md='65', flex-lg='50', flex-xl='40')
       md-card.md-whiteframe-12dp
         md-card-title
           md-card-title-text
-            mdspan.md-headline #{question ? 'Edit' : 'New'} question
+            mdspan.md-headline {{qc.question.id ? 'Edit' : 'New'}} question
         md-card-content
           md-input-container.md-block.question
             label Question text
-            input(data-ng-model='qc.question.text').question
+            input(data-ng-model='qc.question.text', md-autofocus='!qc.question.id').question
           md-list
             md-subheader.md-no-sticky
               ng-pluralize(count='qc.question.answers.length', when='{"one": "1 option", "other": "{} options"}')
@@ -26,24 +26,10 @@ append body-content
                 md-icon(data-ng-click='qc.onRemoveItemClick($index)').text-center.cursor-pointer
                   i.fa.fa-remove
             md-list-item(layout-align='center center')
-              md-button(data-ng-click='qc.onAddOptionClick($event)', layout-align='center center', tabindex='-1')
+              a.md-primary.md-button(data-ng-click='qc.onAddOptionClick($event)', layout-align='center center', tabindex='-1')
                 i.fa.fa-plus
                 | &nbsp;
                 span Add another option
         md-card-actions(layout='row')
           md-button(flex, data-ng-disabled='!qc.isValid()', data-ng-click='qc.onSubmitClick($event)').md-button.md-raised.md-primary.sumo-green
             span {{ qc.isSubmitting ? 'Saving' : 'Save' }} Question
-      //- input(type='hidden', name='_csrf', value='#{csrfToken}')
-
-  //- form(method='POST').row.small-up-1.medium-up-2.large-up-3
-  //-   .large-7.large-offset-2.columns
-  //-     fieldset.margin-top-sml
-  //-       h3.text-center.blue Enter your Question
-  //-       .row.margin-top-sml
-  //-         .large-12.columns
-  //-           textarea#question(rows="3", name="question", placeholder="Enter your question") #{question ? question.text : ''}
-  //-       .row
-  //-         .large-12.columns.margin-top-sml
-  //-           button.button.med.green.center.semi-trans(type="submit") Save
-  //-   input(type='hidden', name='csurf', value='#{csrfToken}')
-

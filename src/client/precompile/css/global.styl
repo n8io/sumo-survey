@@ -16,8 +16,15 @@ md-toolbar
       text-decoration none
 .md-button.sumo-green:not([disabled])
   background-color #5bc739
-.md-button.md-raised.sumo-green:not([disabled]):hover
-  background-color #87d955
+  &:hover
+  &:active
+  &:focus
+    background-color #5bc739
+.md-button.md-raised.sumo-green:not([disabled])
+  &:hover
+  &:active
+  &:focus
+    background-color #87d955
 .cursor-pointer
   cursor pointer
 .admin-edit

@@ -10,7 +10,7 @@ append body-content
               span #{question.text}
               - if (!!user)
                 | &nbsp;
-                a(href='/admin/question/edit/#{question.key}') edit
+                a(href='/questions/#{question.key.substring(0, 8)}') edit
         md-card-content
           md-radio-group(data-ng-model='ac.answer').md-default
             md-radio-button(data-ng-repeat='answer in ac.question.answers', data-ng-value='answer.key') {{answer.text}}

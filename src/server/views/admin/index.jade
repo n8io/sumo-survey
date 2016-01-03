@@ -3,13 +3,13 @@ extends ../_layouts/master
 append body-content
   .row
     .right
-      md-button.md-primary.right(href='/admin/question/create')
+      md-button.md-primary.right(href='/questions/new')
         i.fa.fa-plus
         | &nbsp;&nbsp;
         span New Question
     .clearfix
   .row
-    md-table-container
+    md-table-container(data-ng-controller='QuestionAdminController as qac')
       table(md-table).questions
         - if (!questions || !questions.length)
           thead(md-head)
@@ -21,7 +21,7 @@ append body-content
               td(md-cell)
                 .text-center
                   span There aren't any questions currently. Get started by&nbsp;
-                  a(href='/admin/question/create') creating a new survey question
+                  a(href='/questions/create') creating a new survey question
                   span .
         - else
             thead(md-head)
@@ -29,13 +29,12 @@ append body-content
                 th(colspan='3', md-column)
                   span Questions
             tbody(md-body)
-              - for q in questions
-                tr(md-row)
-                  td(md-cell) #{q.text}
-                  td(md-cell, width='100').text-center
-                    a(href='/admin/question/#{q.key}/results') Responses
-                  td(md-cell, width='100').text-center
-                    a(href='/admin/question/#{q.key}') Edit
-                    span &nbsp;|&nbsp;
-                    a(href='#') Delete
+              tr(md-row, data-ng-repeat='q in qac.questions')
+                td(md-cell, data-ng-bind='q.text')
+                td(md-cell, width='100').text-center
+                  a(data-ng-href='/questions/{{q.key | uuid8}}/results') Responses
+                td(md-cell, width='100').text-center
+                  a(data-ng-href='/questions/{{q.key | uuid8}}') Edit
+                  span &nbsp;|&nbsp;
+                  a(href='javascript://', data-ng-click='qac.onDeleteClick($event, q)') Delete
 

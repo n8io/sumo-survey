@@ -23,9 +23,9 @@ html
             span.hide-xs SumoMe | Survey
         span(flex)
         - if (!user)
-          md-button(href='/admin', aria-label='Log In') Log In
+          md-button(href='/questions', aria-label='Log In') Log In
         - else
-          md-button(href='/admin', aria-label='Admin') Admin
+          md-button(href='/questions', aria-label='Admin') Admin
           md-button(href='/logout', aria-label='Log Out') Log Out
     div(flex,layout='row')
       md-content#content(flex)
@@ -33,6 +33,7 @@ html
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js', id='js-jquery')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js', id='js-angular')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-resource.min.js', id='js-angular')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-route.min.js', id='js-angular-route')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js', id='js-angular-animate')
     script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js', id='js-angular-aria')

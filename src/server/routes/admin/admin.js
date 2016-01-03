@@ -13,7 +13,7 @@ function routeHandler(app, auth) {
     .get('/', get)
     ;
 
-  app.use('/admin', auth.loginRequired, router);
+  app.use('/questions', auth.loginRequired, router);
 }
 
 function validateId(req, res, next, id) {

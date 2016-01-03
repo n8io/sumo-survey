@@ -1,13 +1,27 @@
 (function() {
   'use strict';
 
-  angular.module('surveyApp', ['ngMaterial']);
+  angular.module('surveyApp', [
+    'ngResource',
+    'ngMaterial'
+  ]);
 
   angular
     .module('surveyApp')
     .config(['$httpProvider', function($httpProvider) {
       $httpProvider.defaults.xsrfCookieName = 'XSRF-TOKEN';
       $httpProvider.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+    }])
+    .filter('uuid8', function() {
+      return function(val) {
+        return typeof val === 'string' ? val.substring(0, 8) : val;
+      };
+    })
+    .factory('QuestionService', ['$resource', function($resource) {
+      return $resource('/api/questions/:id');
+    }])
+    .factory('QuestionResultsService', ['$resource', function($resource) {
+      return $resource('/api/questions/:id/results');
     }])
     .controller('AnswerController', [function() {
       var vm = this;
@@ -20,18 +34,25 @@
 
       }
     }])
-    .controller('QuestionController', ['$timeout', '$http', function($timeout, $http) {
+    .controller('QuestionController', ['$timeout', '$http', 'QuestionService', function($timeout, $http, QuestionService) {
       var vm = this;
 
-      if (!window.__question) {
+      vm.isLoading = true;
+
+      if (!window.__key) {
         vm.question = {
           answers: []
         };
         vm.question.answers.push(getEmptyOption());
         vm.question.answers.push(getEmptyOption());
+        vm.isLoading =  false;
       }
       else {
-        vm.question = angular.fromJson(angular.toJson(window.__question));
+        QuestionService.get({id: window.__key}).$promise.then(function(question) {
+          vm.question = question;
+          vm.originalQuestion = angular.copy(question);
+          vm.isLoading =  false;
+        });
       }
 
       vm.isValid = isValid;
@@ -60,23 +81,14 @@
       function onSubmitClick(ev) {
         // Made it this far, client side validation passed
         var data = angular.fromJson(angular.toJson(vm.question));
-        var url = vm.question.key ? '/admin/question/' + vm.question.key : '/admin/question/create';
 
-        vm.isSubmitting = true;
-
-        $http
-          .post(url, data)
-          .success(function(data, status) {
-            // TODO: Set view state to submitted.
-
-            window.location = '/admin';
-          })
-          .error(function(err) {
+        QuestionService.save(data, function(question) {
+          window.location = '/questions';
+        }, function(err) {
             console.log(err);
 
             vm.isSubmitting = false;
-          })
-          ;
+        });
       }
 
       function getEmptyOption() {
@@ -86,11 +98,11 @@
       function isValid() {
         var valid = true;
 
-        if (vm.isSubmitting) {
+        if (vm.isLoading || vm.isSubmitting) {
           return false;
         }
 
-        if (window.__question && angular.equals(vm.question, window.__question)) {
+        if (vm.originalQuestion && angular.equals(vm.question, vm.originalQuestion)) {
           return false;
         }
 
@@ -116,9 +128,44 @@
       }
 
       function init() {
-        $timeout(function() {
-          $('input.question').focus();
-        }, 300);
+        if (!window.__key) {
+          $timeout(function() {
+            $('.question').focus();
+          }, 300);
+        }
+      }
+    }])
+    .controller('QuestionAdminController', ['$mdDialog', 'QuestionService', function($mdDialog, QuestionService) {
+      var vm = this;
+
+      vm.onDeleteClick = onDeleteClick;
+
+      init();
+
+      function init() {
+        vm.questions = QuestionService.query();
+      }
+
+      function onDeleteClick(ev, question) {
+        var confirm = $mdDialog.confirm()
+          .title('Are you sure you want to delete this question?')
+          .textContent('This cannot be undone. All responses will be lost.')
+          .ariaLabel('Are you sure?')
+          .targetEvent(ev)
+          .ok('CANCEL')
+          .cancel('DELETE');
+
+        $mdDialog.show(confirm).then(function() { /* cancelled */ }, function() {
+          deleteQuestion(question);
+        });
+      }
+
+      function deleteQuestion(question) {
+        QuestionService.delete({id: question.key.substring(0, 8)}, function() {
+          QuestionService.query().$promise.then(function(questions) {
+            vm.questions = questions;
+          });
+        });
       }
     }])
     ;
