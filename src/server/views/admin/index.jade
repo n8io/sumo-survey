@@ -10,8 +10,16 @@ append body-content
     .clearfix
   .row
     md-table-container(data-ng-controller='QuestionAdminController as qac')
-      table(md-table).questions
-        - if (!questions || !questions.length)
+      table(md-table, data-ng-if='qac.isLoading').questions
+          thead(md-head)
+            tr(md-row)
+              th(md-column)
+                span Questions
+          tbody(md-body)
+            tr(md-row)
+              td(md-cell)
+                .text-center &nbsp;
+      table(md-table, data-ng-if='!qac.isLoading && !qac.questions.length').questions
           thead(md-head)
             tr(md-row)
               th(md-column)
@@ -23,7 +31,7 @@ append body-content
                   span There aren't any questions currently. Get started by&nbsp;
                   a(href='/questions/new') creating a new survey question
                   span .
-        - else
+      table(md-table, data-ng-if='qac.questions && qac.questions.length').questions
             thead(md-head)
               tr(md-row)
                 th(colspan='3', md-column)

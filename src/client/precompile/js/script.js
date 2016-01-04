@@ -148,7 +148,11 @@
       init();
 
       function init() {
-        vm.questions = QuestionService.query();
+        vm.isLoading = true;
+        QuestionService.query().$promise.then(function(questions) {
+          vm.questions = questions;
+          vm.isLoading = false;
+        });
       }
 
       function onDeleteClick(ev, question) {
