@@ -13,7 +13,6 @@ A prototype for a responsive web app that presents the user with random multiple
 ## Getting started
 
 1. `npm install --production`
-1. `npm run gulp`
 1. `npm run start`
 1. Visit [http://localhost:3000](http://localhost:3000)
 
