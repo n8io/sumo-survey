@@ -42,6 +42,8 @@ The following items were left out due to the nature of this prototype. However a
 1. Cross browser testing. Dev tested on Chrome, briefly checked on Firefox.
 1. Windows install and support. This was developed on a Mac.
 
+---
+
 The MIT License (MIT) Copyright (c) 2016 Nate Clark
 
 Permission is hereby granted, free of charge, to any person obtaining
