@@ -1,6 +1,8 @@
 # sumo-survey
 A prototype for a survey question web app
 
+<img src='survey.png' />
+
 ## Setup / External dependencies
 
 1. node.js  ^5
