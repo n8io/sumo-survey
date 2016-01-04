@@ -1,32 +1,19 @@
 # sumo-survey
-A survey question app.
+A prototype for a survey question web app
 
-* Requirements
-  * [NodeJs](https://nodejs.org) ![NodeJs Version](http://img.shields.io/badge/node-^5-blue.svg)
-* Builds
-  * [Circle CI](https://circleci.com) [![Circle CI Build Status](https://img.shields.io/circleci/project/n8io/sumo-survey/develop.svg)](https://circleci.com/gh/n8io/sumo-survey/tree/develop)
-* Dependencies
-  * [David DM](https://david-dm.org) ![NPM Dependencies](https://david-dm.org/n8io/sumo-survey/develop.svg)
-* Code Coverage
-  * [CodeCov](https://codecov.io) [![CodeCov Code Coverage](https://img.shields.io/codecov/c/github/n8io/sumo-survey/develop.svg)](https://codecov.io/github/n8io/sumo-survey?branch=develop)
+## Setup / External dependencies
+
+1. node.js  ^5
+1. A running, accesible instance of MySQL
+1. An `.env` file containing key/value pairs. See [.env.example](.env.example) for the required keys.
 
 ## Getting started
-1. `npm install`
 
-## Developing
-1. `npm run dev`
+1. `npm install --production`
+1. `npm run start`
+1. Visit [http://localhost:3000](http://localhost:3000)
 
-## Code Coverage
-1. `npm run coverage`
-
-## Code Linting
-1. `npm run lint`
-
-View [change log](CHANGELOG.md)
-
-The MIT License (MIT)
-
-Copyright (c) 2015 Nate Clark
+The MIT License (MIT) Copyright (c) 2016 Nate Clark
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -22,7 +22,7 @@ const validEnvironments = {
 const now = moment();
 
 const cfg = {
-  env: validEnvironments[process.env.NODE_ENV || ''] || validEnvironments.local,
+  env: validEnvironments[process.env.NODE_ENV || ''] || validEnvironments.prod,
   clean: {
     src: [
       distDir

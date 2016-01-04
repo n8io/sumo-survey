@@ -1,7 +1,11 @@
 extends _layouts/master
 
 append body-content
-  div(layout='row', layout-align='center center')
+  div(layout='column', layout-align='center center')
     div(flex).text-center
-      h2 Thanks for answering.
-      a(href='/').md-button.md-default Up for another?
+      h2 Thanks for your input.
+    div(flex).text-center
+      span Up for another?
+      br
+    div(flex).text-center
+      a(href='/').md-button.md-primary Click here
