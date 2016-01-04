@@ -10,6 +10,7 @@ A prototype for a survey question web app
 ## Getting started
 
 1. `npm install --production`
+1. `npm run gulp`
 1. `npm run start`
 1. Visit [http://localhost:3000](http://localhost:3000)
 
