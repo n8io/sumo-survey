@@ -1,13 +1,14 @@
 # sumo-survey
-A prototype for a survey question web app
+A prototype for a responsive web app that presents the user with random multiple choice questions
 
-<img src='survey.png' />
+<center><img src='survey.png' align='center' style='max-width: 500px;' /></center>
 
 ## Setup / External dependencies
 
-1. node.js  ^5
+1. Node.Js  v5+
 1. A running, accesible instance of MySQL
-1. An `.env` file containing key/value pairs. See [.env.example](.env.example) for the required keys.
+1. Login credentials to administer questions.
+1. An `.env` file containing environment config values. See [.env.example](.env.example) for the required key/value pairs.
 
 ## Getting started
 
@@ -15,6 +16,31 @@ A prototype for a survey question web app
 1. `npm run gulp`
 1. `npm run start`
 1. Visit [http://localhost:3000](http://localhost:3000)
+
+## What you get
+
+1. ExpressJs framework
+1. Sequelize ORM w/MySQL
+1. Material design UI with AngularJs
+1. Minor CSRF precautions
+1. Gulp build process
+1. ESLint and Stylint - linting
+1. Git hooks for linting checks
+1. Optional CircleCI integration
+1. Optional Dockerfile generation
+
+## What you don't get
+
+The following items were left out due to the nature of this prototype. However all would normally be part of the development lifecycle.
+
+1. Unit tests. The build process for tests is in place but I chose to forgo TDD for two reasons:
+  1. In the interest of time vs long term gain
+  1. Rapid prototyping in general is not tested
+1. Code coverage (see above)
+1. A Content security policy ([see helmet](https://github.com/helmetjs/helmet))
+1. Behind the walls of an auth'd user, I assume the admin user is a "good web citizen"
+1. Cross browser testing. Dev tested on Chrome, briefly checked on Firefox.
+1. Windows install and support. This was developed on a Mac.
 
 The MIT License (MIT) Copyright (c) 2016 Nate Clark
 
