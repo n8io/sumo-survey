@@ -5,7 +5,7 @@ A prototype for a responsive web app that presents the user with random multiple
 
 ## Setup / External dependencies
 
-1. Node.Js  v5+
+1. Node.Js, preferrable version 5.1+
 1. A running, accesible instance of MySQL
 1. Login credentials to administer questions.
 1. An `.env` file containing environment config values. See [.env.example](.env.example) for the required key/value pairs.
@@ -37,7 +37,7 @@ The following items were left out due to the nature of this prototype. However a
   1. Rapid prototyping in general is not tested
 1. Code coverage (see above)
 1. A Content security policy ([see helmet](https://github.com/helmetjs/helmet))
-1. Behind the walls of an auth'd user, I assume the admin user is a "good web citizen"
+1. Trust issues. Behind the walls of an auth'd user, I assume the admin user is a "good web citizen"
 1. Cross browser testing. Dev tested on Chrome, briefly checked on Firefox.
 1. Windows install and support. This was developed on a Mac.
 
