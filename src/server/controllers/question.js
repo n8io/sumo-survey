@@ -10,6 +10,7 @@ module.exports = {
   getRandom: getRandom,
   create: create,
   update: update,
+  upsert: upsert,
   destroy: destroy
 };
 
@@ -90,7 +91,7 @@ function destroy(id) {
     .question
     .destroy({
       where: {
-        $or: [{id: id}, {key: id}]
+        id: id
       }
     })
     ;
@@ -106,6 +107,20 @@ function update(question, key) {
         key: key
       }
     })
+    ;
+}
+
+function upsert(question) {
+  return models
+    .question
+    .upsert(
+      question
+      , {
+        where: {
+          id: question.id || -1
+        }
+      }
+    )
     ;
 }
 

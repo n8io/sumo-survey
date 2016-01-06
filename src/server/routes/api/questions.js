@@ -84,32 +84,22 @@ function updateQuestion(req, res) {
       const deletedAnswerIds = _.difference(existingAnswerIds, updatingAnswerIds);
 
       if (deletedAnswerIds.length) {
-        return answerController
-          .destroy(deletedAnswerIds)
-          ;
+        return answerController.destroy(deletedAnswerIds);
       }
       else {
         return 0;
       }
     })
     .then(function() {
-      models
-        .question
-        .upsert(
-          question
-          , {
-            where: {
-              id: question.id || -1
-            }
-          }
-        )
+      questionController
+        .upsert(question)
         .then(function() {
           const promises = [];
 
           (req.body.answers || []).forEach(function(answer) {
             answer.questionId = question.id;
 
-            promises.push(models.answer.upsert(answer, {where: {id: answer.id}}));
+            promises.push(answerController.upsert(answer));
           });
 
           return models.Sequelize.Promise.all(promises);
@@ -125,13 +115,8 @@ function updateQuestion(req, res) {
 }
 
 function deleteQuestion(req, res) {
-  models
-    .question
-    .destroy({
-      where: {
-        id: req.question.id
-      }
-    })
+  questionController
+    .destroy(req.question.id)
     .then(function(rowsAffected) {
       return res.json({deletions: rowsAffected});
     })
@@ -147,46 +132,16 @@ function lookupQuestion(req, res, next, id) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  if (isUuid) {
-    models
-      .question
-      .findOne({
-        where: {
-          key: {
-            $like: `${id}%`
-          }
-        },
-        include: [models.answer]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
-        }
+  questionController
+    .getByKey(id)
+    .then(function(question) {
+      if (!question) {
+        return next(new Error(ERR_MSG));
+      }
 
-        req.question = question;
+      req.question = question;
 
-        return next();
-      })
-      ;
-  }
-  else if (_.isNumber(id)) {
-    models
-      .question
-      .findOne({
-        where: {
-          id: parseInt(id, 10)
-        },
-        include: [models.answer]
-      })
-      .then(function(question) {
-        if (!question) {
-          return next(new Error(ERR_MSG));
-        }
-
-        req.question = question;
-
-        return next();
-      })
-      ;
-  }
+      return next();
+    })
+    ;
 }

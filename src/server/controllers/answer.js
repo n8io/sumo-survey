@@ -5,6 +5,7 @@ module.exports = {
   get: get,
   update: update,
   create: create,
+  upsert: upsert,
   destroy: destroy
 };
 
@@ -34,6 +35,20 @@ function create(answer) {
   return models
     .answer
     .create(answer)
+    ;
+}
+
+function upsert(answer) {
+  return models
+    .answer
+    .upsert(
+      answer
+      , {
+        where: {
+          id: answer.id || -1
+        }
+      }
+    )
     ;
 }
 
