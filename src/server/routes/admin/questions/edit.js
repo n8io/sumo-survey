@@ -1,6 +1,9 @@
 const express = require('express');
 const cwd = require('cwd');
+const chalk = require('chalk');
 const models = require(cwd('src/server/models'));
+const questionController = require(cwd('src/server/controllers/question'));
+const answerController = require(cwd('src/server/controllers/answer'));
 
 module.exports = routeHandler;
 
@@ -33,16 +36,8 @@ function lookupQuestion(req, res, next, id) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  models
-    .question
-    .findOne({
-      where: {
-        key: {
-          $like: `${id}%`
-        }
-      },
-      include: [models.answer]
-    })
+  questionController
+    .getByKey(id)
     .then(function(question) {
       if (!question) {
         return next(new Error(ERR_MSG_NOT_FOUND));
@@ -56,14 +51,16 @@ function lookupQuestion(req, res, next, id) {
 }
 
 function deleteQuestion(req, res) {
-  models
-    .question
-    .destroy({
-      where: {
-        id: req.question.id
-      }
+  questionController
+    .delete(req.question.id)
+    .then(function(/* rowsAffected */) {
+      return res.redirect('/questions');
     })
-    .then(function() {
+    .catch(function(reason) {
+      // TODO: handle failures better
+
+      console.log(chalk.red(`Failed to delete question.\n${reason}`)); // eslint-disable-line no-console
+
       return res.redirect('/questions');
     })
     ;
@@ -76,15 +73,10 @@ function getQuestionEdit(req, res) {
 }
 
 function postQuestion(req, res) {
-  models
-    .question
+  questionController
     .update({
       text: req.body.text,
       answers: req.body.answers
-    }, {
-      where: {
-        key: req.question.key
-      }
     })
     .then(function(question) {
       const promises = [];
@@ -92,21 +84,21 @@ function postQuestion(req, res) {
       req.body.answers.forEach(function(answer) {
         answer.questionId = question.id;
 
-        promises.push(models.answer.update(
-          {
-            text: answer.text
-          },
-          {
-            where: {
-              id: answer.id
-            }
-          }
-        ));
+        promises.push(answerController.update({
+          text: answer.text
+        }));
       });
 
       return models.Sequelize.Promise.all(promises);
     })
     .then(function() {
+      return res.redirect('/questions');
+    })
+    .catch(function(reason) {
+      // TODO: handle failures better
+
+      console.log(chalk.red(`Failed to update question.\n${reason}`)); // eslint-disable-line no-console
+
       return res.redirect('/questions');
     })
     ;

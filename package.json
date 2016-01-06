@@ -61,6 +61,7 @@
     "body-parser": "^1.14.2",
     "bower": "^1",
     "bunyan": "^1",
+    "chalk": "^1.1.1",
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
     "cwd": "^0.9.1",

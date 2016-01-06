@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     dialectOptions: {
       timeout: 3 * 1000
     },
-    logging: process.env.BUNYAN_LOG_LEVEL === 'dev' ? console.log : function() {} // eslint-disable-line no-console
+    logging: process.env.BUNYAN_LOG_LEVEL === 'debug' ? console.log : function() {} // eslint-disable-line no-console
   }
 );
 const db = {};
