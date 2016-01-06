@@ -4,6 +4,8 @@ const express = require('express');
 const cwd = require('cwd');
 const _ = require('lodash');
 const models = require(cwd('src/server/models'));
+const clientAnswerController = require(cwd('src/server/controllers/clientAnswer'));
+const questionController = require(cwd('src/server/controllers/question'));
 
 module.exports = routeHandler;
 
@@ -26,13 +28,8 @@ function getResults(req, res) {
 }
 
 function deleteClientAnswer(req, res) {
-  models
-    .question
-    .destroy({
-      where: {
-        id: req.clientAnswer.id
-      }
-    })
+  clientAnswerController
+    .destroy(req.clientAnswer.id)
     .then(function(rowsAffected) {
       return res.json({deletions: rowsAffected});
     })
@@ -44,13 +41,8 @@ function lookupClientAnswer(req, res, next, clientAnswerId) {
     return next(new Error('The given client answer id is in an unknown format'));
   }
 
-  models
-    .clientAnswer
-    .findOne({
-      where: {
-        id: req.params.clientAnswerId
-      }
-    })
+  clientAnswerController
+    .get(req.params.clientAnswerId)
     .then(function(clientAnswer) {
       if (!clientAnswer) {
         return next(new Error('The given client answer could not be found.'));
@@ -72,18 +64,8 @@ function lookupQuestion(req, res, next, id) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  models
-    .question
-    .findOne({
-      where: {
-        key: {
-          $like: `${id}%`
-        }
-      },
-      include: [
-        models.answer
-      ]
-    })
+  questionController
+    .getByKey(id)
     .then(function(question) {
       if (!question) {
         return next(new Error(ERR_MSG_NOT_FOUND));
@@ -91,13 +73,8 @@ function lookupQuestion(req, res, next, id) {
 
       req.question = question;
 
-      models
-        .clientAnswer
-        .findAll({
-          where: {
-            answerId: _.pluck(question.answers, 'id')
-          }
-        })
+      clientAnswerController
+        .getByAnswerIds(_.pluck(question.answers, 'id'))
         .then(function(clientAnswers) {
           const answersWithResults = _.map(unbind(req.question.answers), function(a) {
             a.results = _.where(clientAnswers, {answerId: a.id});

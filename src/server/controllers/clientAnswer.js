@@ -4,7 +4,9 @@ const models = require(cwd('src/server/models'));
 module.exports = {
   get: get,
   getByClientIdAnswerId: getByClientIdAnswerId,
-  create: create
+  getByAnswerIds: getByAnswerIds,
+  create: create,
+  destroy: destroy
 };
 
 function get(id) {
@@ -13,6 +15,17 @@ function get(id) {
     .findOne({
       where: {
         id: id || -1
+      }
+    })
+    ;
+}
+
+function getByAnswerIds(answerIds) {
+  return models
+    .clientAnswer
+    .findAll({
+      where: {
+        answerId: answerIds
       }
     })
     ;
@@ -34,5 +47,16 @@ function create(client) {
   return models
     .clientAnswer
     .create(client)
+    ;
+}
+
+function destroy(id) {
+  return models
+    .clientAnswer
+    .destroy({
+      where: {
+        id: id || -1
+      }
+    })
     ;
 }
