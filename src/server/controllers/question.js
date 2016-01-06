@@ -1,9 +1,12 @@
+'use strict';
+
 const cwd = require('cwd');
 const models = require(cwd('src/server/models'));
 
 module.exports = {
   get: get,
   getByKey: getByKey,
+  getAll: getAll,
   getRandom: getRandom,
   update: update,
   destroy: destroy
@@ -32,17 +35,25 @@ function getRandom(clientKey) {
   );
 }
 
-function get(id) {
+function get(id, includeAnswers) {
+  let opts = {};
+
   id = id || 'not set';
+
+  opts = {
+    where: {
+      $or: [{id: id}, {key: id}]
+    },
+    order: [['id', 'ASC']]
+  };
+
+  if (includeAnswers) {
+    opts.include = [models.answer];
+  }
 
   return models
     .question
-    .findOne({
-      where: {
-        $or: [{id: id}, {key: id}]
-      },
-      order: [['id', 'ASC']]
-    })
+    .findOne(opts)
     ;
 }
 
@@ -58,6 +69,15 @@ function getByKey(key) {
         }
       },
       include: [models.answer]
+    })
+    ;
+}
+
+function getAll() {
+  return models
+    .question
+    .findAll({
+      order: [['updatedAt', 'DESC']]
     })
     ;
 }

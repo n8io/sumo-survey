@@ -2,7 +2,7 @@
 
 const express = require('express');
 const cwd = require('cwd');
-const models = require(cwd('src/server/models'));
+const questionController = require(cwd('src/server/controllers/question'));
 
 module.exports = routeHandler;
 
@@ -37,15 +37,8 @@ function lookupQuestion(req, res, next, id) {
     return next(new Error('The given question identifier is in an unknown format'));
   }
 
-  models
-    .question
-    .findOne({
-      where: {
-        key: {
-          $like: `${id}%`
-        }
-      }
-    })
+  questionController
+    .getByKey(id)
     .then(function(question) {
       if (!question) {
         return next(new Error(ERR_MSG_NOT_FOUND));

@@ -3,7 +3,9 @@
 const express = require('express');
 const cwd = require('cwd');
 const _ = require('lodash');
+
 const models = require(cwd('src/server/models'));
+const questionController = require(cwd('src/server/controllers/question'));
 
 module.exports = routeHandler;
 
@@ -24,11 +26,8 @@ function routeHandler(app, auth) {
 }
 
 function getQuestions(req, res) {
-  models
-    .question
-    .findAll({
-      order: [['updatedAt', 'DESC']]
-    })
+  questionController
+    .getAll()
     .then(function(questions) {
       return res.json(questions);
     })
@@ -36,14 +35,8 @@ function getQuestions(req, res) {
 }
 
 function getQuestion(req, res) {
-  models
-    .question
-    .findOne({
-      where: {
-        id: req.question.id
-      },
-      include: [models.answer]
-    })
+  questionController
+    .get(req.question.id, true)
     .then(function(question) {
       return res.json(question);
     })

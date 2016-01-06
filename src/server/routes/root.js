@@ -92,7 +92,7 @@ function postQuestion(req, res) {
   // Multiple database calls are not ideal.
   // Most likely leverage a single sproc call here in a live app.
   questionController
-    .getQuestion(req.body.q)
+    .getByKey(req.body.q)
     .then(function(q) {
       question = q;
 

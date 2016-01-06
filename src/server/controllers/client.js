@@ -23,7 +23,7 @@ function get(clientKey) {
           return reject('Client not found and could not be created.');
         }
 
-        return resolve({key: objs[0].key});
+        return resolve(objs[0]);
       })
       ;
   });

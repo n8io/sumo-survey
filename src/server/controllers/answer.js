@@ -11,7 +11,7 @@ function get(id) {
     .answer
     .findOne({
       where: {
-        id: id || -1
+        $or: [{id: id || -1}, {key: id || 'not set'}]
       }
     })
     ;
