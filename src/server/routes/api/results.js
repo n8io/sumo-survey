@@ -3,7 +3,6 @@
 const express = require('express');
 const cwd = require('cwd');
 const _ = require('lodash');
-const models = require(cwd('src/server/models'));
 const clientAnswerController = require(cwd('src/server/controllers/clientAnswer'));
 const questionController = require(cwd('src/server/controllers/question'));
 
