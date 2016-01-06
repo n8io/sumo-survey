@@ -6,6 +6,7 @@ const _ = require('lodash');
 
 const models = require(cwd('src/server/models'));
 const questionController = require(cwd('src/server/controllers/question'));
+const answerController = require(cwd('src/server/controllers/answer'));
 
 module.exports = routeHandler;
 
@@ -46,8 +47,7 @@ function getQuestion(req, res) {
 function createQuestion(req, res) {
   let question = null;
 
-  models
-    .question
+  questionController
     .create(req.body)
     .then(function(q) {
       const promises = [];
@@ -57,20 +57,14 @@ function createQuestion(req, res) {
       (req.body.answers || []).forEach(function(answer) {
         answer.questionId = question.id;
 
-        promises.push(models.answer.create(answer));
+        promises.push(answerController.create(answer));
       });
 
       return models.Sequelize.Promise.all(promises);
     })
     .then(function() {
-      models
-        .question
-        .findOne({
-          where: {
-            id: question.id
-          },
-          include: [models.answer]
-        })
+      return questionController
+        .get(question.id, true)
         .then(function(question) {
           return res.json(question);
         })
@@ -82,27 +76,16 @@ function createQuestion(req, res) {
 function updateQuestion(req, res) {
   const question = req.body;
 
-  models
-    .question
-    .findOne({
-      where: {
-        id: question.id
-      },
-      include: [models.answer]
-    })
+  questionController
+    .get(question.id, true)
     .then(function(q) {
       const updatingAnswerIds = _.pluck(question.answers, 'id');
       const existingAnswerIds = _.pluck(q.answers, 'id');
       const deletedAnswerIds = _.difference(existingAnswerIds, updatingAnswerIds);
 
       if (deletedAnswerIds.length) {
-        return models
-          .answer
-          .destroy({
-            where: {
-              id: deletedAnswerIds
-            }
-          })
+        return answerController
+          .destroy(deletedAnswerIds)
           ;
       }
       else {

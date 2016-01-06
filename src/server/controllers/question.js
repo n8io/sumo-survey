@@ -8,6 +8,7 @@ module.exports = {
   getByKey: getByKey,
   getAll: getAll,
   getRandom: getRandom,
+  create: create,
   update: update,
   destroy: destroy
 };
@@ -87,11 +88,10 @@ function destroy(id) {
 
   return models
     .question
-    .findOne({
+    .destroy({
       where: {
         $or: [{id: id}, {key: id}]
-      },
-      order: [['id', 'ASC']]
+      }
     })
     ;
 }
@@ -106,5 +106,12 @@ function update(question, key) {
         key: key
       }
     })
+    ;
+}
+
+function create(question) {
+  return models
+    .question
+    .create(question)
     ;
 }

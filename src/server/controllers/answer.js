@@ -3,7 +3,9 @@ const models = require(cwd('src/server/models'));
 
 module.exports = {
   get: get,
-  update: update
+  update: update,
+  create: create,
+  destroy: destroy
 };
 
 function get(id) {
@@ -23,6 +25,26 @@ function update(answer) {
     .findOne(answer, {
       where: {
         id: answer.id
+      }
+    })
+    ;
+}
+
+function create(answer) {
+  return models
+    .answer
+    .create(answer)
+    ;
+}
+
+function destroy(id) {
+  id = id || 'not set';
+
+  return models
+    .answer
+    .destroy({
+      where: {
+        id: id
       }
     })
     ;
